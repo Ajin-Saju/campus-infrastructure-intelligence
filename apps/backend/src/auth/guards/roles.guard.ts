@@ -21,9 +21,7 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('User has no role assigned');
     }
 
-    const userRoleName = typeof user.role === 'object' ? user.role.name : user.role;
-    const hasRole = requiredRoles.includes(userRoleName);
-
+    const hasRole = requiredRoles.includes(user.role.name);
     if (!hasRole) {
       throw new ForbiddenException(
         `Requires one of the following roles: ${requiredRoles.join(', ')}`,
