@@ -21,7 +21,7 @@ export class AuditLogService {
         data: {
           userId: params.userId || null,
           action: params.action,
-          entityType: params.entityType || 'USER_MANAGEMENT',
+          entityType: params.entityType || 'AUTH',
           entityId: params.entityId || null,
           ipAddress: params.ipAddress || null,
           userAgent: params.userAgent || null,
@@ -29,6 +29,7 @@ export class AuditLogService {
         },
       });
     } catch (error) {
+      // Fail gracefully so logging errors do not crash primary auth flows
       console.error('AuditLog error:', error);
     }
   }

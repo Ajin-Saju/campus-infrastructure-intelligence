@@ -13,6 +13,7 @@ import { AuditLogService } from '../audit-log/audit-log.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -26,17 +27,11 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto, ipAddress?: string, userAgent?: string) {
-    const user = await this.userService.createUser({
-      email: dto.email,
-      password: dto.password,
-      firstName: dto.firstName,
-      lastName: dto.lastName,
-      phone: dto.phone,
-      roleName: dto.roleName || 'STUDENT',
-    });
+    const user = await this.userService.createUser(dto);
 
+    // Generate Email Verification Token
     const verificationToken = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
     await this.userService.setVerificationToken(user.id, verificationToken, expires);
 
     await this.auditLogService.logEvent({
@@ -49,7 +44,7 @@ export class AuthService {
 
     return {
       message: 'Registration successful. Please verify your email.',
-      verificationToken,
+      verificationToken, // Provided for easy development / demo testing
       user: {
         id: user.id,
         email: user.email,
@@ -120,7 +115,7 @@ export class AuthService {
           'super-secret-refresh-key-change-in-prod',
       });
 
-      const user = await this.userService.getUserById(payload.sub);
+      const user = await this.userService.findById(payload.sub);
       if (!user || !user.refreshTokenHash) {
         throw new ForbiddenException('Access denied');
       }
@@ -166,7 +161,7 @@ export class AuthService {
     }
 
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 60 * 60 * 1000);
+    const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
     await this.userService.setResetPasswordToken(user.id, resetToken, expires);
 
     await this.auditLogService.logEvent({
@@ -178,7 +173,7 @@ export class AuthService {
 
     return {
       message: 'Password reset token generated successfully.',
-      resetToken,
+      resetToken, // Returned for testing / frontend demo
     };
   }
 
