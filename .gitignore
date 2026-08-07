@@ -145,3 +145,5 @@ vite.config.ts.timestamp-*
 # Turbo cache
 .turbo
 
+
+/generated/prisma
