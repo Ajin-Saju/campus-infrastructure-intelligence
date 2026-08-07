@@ -82,6 +82,7 @@ export class AuthController {
         firstName: user.firstName,
         lastName: user.lastName,
         phone: user.phone,
+        avatarUrl: user.avatarUrl,
         role: typeof user.role === 'object' ? user.role?.name : user.role,
         department: user.department,
         isEmailVerified: user.isEmailVerified,

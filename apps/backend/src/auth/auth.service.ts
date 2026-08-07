@@ -100,6 +100,7 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        avatarUrl: user.avatarUrl,
         role: user.role.name,
         permissions: user.role.permissions,
         isEmailVerified: user.isEmailVerified,

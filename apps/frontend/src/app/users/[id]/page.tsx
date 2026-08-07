@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../context/auth-context';
 import { fetchUserById, UserItem } from '../../../lib/users-client';
 import {
   User,
@@ -18,12 +20,20 @@ import {
 } from 'lucide-react';
 
 export default function UserDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const router = useRouter();
+  const { user: currentUser, isLoading: authLoading } = useAuth();
   const resolvedParams = use(params);
   const userId = resolvedParams.id;
 
   const [user, setUser] = useState<UserItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!authLoading && !currentUser) {
+      router.push('/login');
+    }
+  }, [authLoading, currentUser, router]);
 
   useEffect(() => {
     async function loadData() {

@@ -3,6 +3,7 @@
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../../context/auth-context';
 import { fetchUserById, updateUser } from '../../../../lib/users-client';
 import {
   User,
@@ -20,6 +21,13 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
   const resolvedParams = use(params);
   const userId = resolvedParams.id;
   const router = useRouter();
+  const { user: currentUser, isLoading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && !currentUser) {
+      router.push('/login');
+    }
+  }, [authLoading, currentUser, router]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
