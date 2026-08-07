@@ -27,8 +27,8 @@ export class CreateUserDto {
   avatarUrl?: string;
 
   @IsString()
-  @IsNotEmpty()
-  roleName!: string;
+  @IsOptional()
+  roleName?: string = 'STUDENT';
 
   @IsString()
   @IsOptional()

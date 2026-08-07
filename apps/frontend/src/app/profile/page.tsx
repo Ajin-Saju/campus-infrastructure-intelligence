@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/auth-context';
-import { User, Shield, LogOut, CheckCircle, Clock } from 'lucide-react';
+import { User, Shield, LogOut, CheckCircle, Clock, Users, Building2 } from 'lucide-react';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -33,8 +34,8 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen p-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
-      <div className="max-w-3xl mx-auto space-y-6">
-        {/* Header */}
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Profile Header */}
         <div className="flex items-center justify-between bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-xl">
           <div className="flex items-center gap-4">
             <div className="h-16 w-16 rounded-2xl bg-gradient-to-tr from-indigo-500 to-cyan-400 p-0.5 shadow-lg shadow-indigo-500/20">
@@ -61,6 +62,43 @@ export default function ProfilePage() {
             <LogOut className="h-4 w-4" />
             Sign Out
           </button>
+        </div>
+
+        {/* Quick Navigation Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Link
+            href="/users"
+            className="p-5 bg-slate-900/80 hover:bg-slate-800/80 backdrop-blur-xl border border-slate-800 rounded-2xl flex items-center justify-between group transition-all shadow-lg"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-indigo-500/10 rounded-xl text-indigo-400 border border-indigo-500/20">
+                <Users className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-white group-hover:text-indigo-300 transition-colors">
+                  User Management
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">Manage accounts, roles, and status</p>
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            href="/buildings"
+            className="p-5 bg-slate-900/80 hover:bg-slate-800/80 backdrop-blur-xl border border-slate-800 rounded-2xl flex items-center justify-between group transition-all shadow-lg"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-cyan-500/10 rounded-xl text-cyan-400 border border-cyan-500/20">
+                <Building2 className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-white group-hover:text-cyan-300 transition-colors">
+                  Building Hierarchy
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">Manage Buildings, Floors, and Rooms</p>
+              </div>
+            </div>
+          </Link>
         </div>
 
         {/* User Details Grid */}

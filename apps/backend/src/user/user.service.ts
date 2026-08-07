@@ -37,6 +37,10 @@ export class UserService {
     return user;
   }
 
+  async findById(id: string) {
+    return this.getUserById(id);
+  }
+
   async findByEmail(email: string) {
     return this.userRepository.findByEmail(email);
   }
@@ -49,9 +53,10 @@ export class UserService {
 
     const passwordHash = await argon2.hash(dto.password);
 
-    let role = await this.userRepository.findRoleByName(dto.roleName);
+    const roleName = dto.roleName || 'STUDENT';
+    let role = await this.userRepository.findRoleByName(roleName);
     if (!role) {
-      role = await this.userRepository.createRole(dto.roleName);
+      role = await this.userRepository.createRole(roleName);
     }
 
     const user = await this.userRepository.create({
