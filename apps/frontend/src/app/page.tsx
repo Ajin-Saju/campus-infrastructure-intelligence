@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ShieldCheck, LogIn, UserPlus, KeyRound, User } from 'lucide-react';
+import { ShieldCheck, LogIn, UserPlus, KeyRound, Users } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -15,7 +15,7 @@ export default function HomePage() {
             Campus Infrastructure Intelligence
           </h1>
           <p className="text-sm text-slate-400 mt-2">
-            Secure Authentication Portal with JWT, Refresh Tokens, Argon2 & RBAC
+            User Management & Security Administration Portal
           </p>
         </div>
 
@@ -29,15 +29,22 @@ export default function HomePage() {
           </Link>
 
           <Link
-            href="/register"
+            href="/users"
             className="p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm border border-slate-700 flex items-center justify-center gap-3 transition-all"
           >
-            <UserPlus className="h-5 w-5 text-cyan-400" />
-            Register Account
+            <Users className="h-5 w-5 text-cyan-400" />
+            User Management
           </Link>
         </div>
 
         <div className="pt-4 border-t border-slate-800 flex justify-center gap-6 text-sm text-slate-400">
+          <Link
+            href="/register"
+            className="hover:text-indigo-400 flex items-center gap-1.5 transition-colors"
+          >
+            <UserPlus className="h-4 w-4" />
+            Register Account
+          </Link>
           <Link
             href="/forgot-password"
             className="hover:text-indigo-400 flex items-center gap-1.5 transition-colors"

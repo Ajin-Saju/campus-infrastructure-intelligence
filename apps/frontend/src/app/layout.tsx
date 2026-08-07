@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { AuthProvider } from '../context/auth-context';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
-  title: 'Campus Infrastructure Intelligence - Authentication',
+  title: 'Campus Infrastructure Intelligence',
   description: 'Enterprise AI-powered campus infrastructure maintenance management system',
 };
 
@@ -14,8 +14,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-slate-950 text-slate-100 antialiased min-h-screen">
-        <AuthProvider>{children}</AuthProvider>
+      <body className="antialiased bg-slate-950 text-slate-100">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

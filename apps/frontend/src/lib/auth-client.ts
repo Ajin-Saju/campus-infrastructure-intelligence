@@ -10,7 +10,7 @@ export interface UserProfile {
   firstName: string;
   lastName: string;
   phone?: string;
-  role: string;
+  role: string | { name: string };
   isEmailVerified: boolean;
   createdAt?: string;
 }
