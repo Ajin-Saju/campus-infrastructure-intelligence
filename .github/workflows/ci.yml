@@ -2,7 +2,7 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, "feature/*" ]
   pull_request:
     branches: [ main, master ]
 
@@ -10,6 +10,13 @@ jobs:
   validate:
     name: Build & Validate Monorepo
     runs-on: ubuntu-latest
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/campus_ai"
+      NEXT_PUBLIC_API_URL: "http://localhost:3001/api/v1"
+      JWT_ACCESS_SECRET: "ci-test-jwt-access-secret-key"
+      JWT_REFRESH_SECRET: "ci-test-jwt-refresh-secret-key"
 
     steps:
       - name: Checkout Repository
@@ -24,6 +31,9 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Generate Prisma Client
+        run: npm run prisma:generate --workspace=@campus-infra/database
+
       - name: Check Code Formatting
         run: npm run format:check
 
@@ -34,7 +44,7 @@ jobs:
         run: npm run check-types
 
       - name: Validate Prisma Schema
-        run: npx prisma validate --schema=database/prisma/schema.prisma
+        run: npx prisma validate
 
       - name: Build All Workspaces
         run: npm run build
