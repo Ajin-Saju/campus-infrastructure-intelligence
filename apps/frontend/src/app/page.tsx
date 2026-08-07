@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ShieldCheck, LogIn, UserPlus, KeyRound, Users } from 'lucide-react';
+import { ShieldCheck, LogIn, UserPlus, KeyRound, Users, Building2 } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -14,15 +14,13 @@ export default function HomePage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
             Campus Infrastructure Intelligence
           </h1>
-          <p className="text-sm text-slate-400 mt-2">
-            User Management & Security Administration Portal
-          </p>
+          <p className="text-sm text-slate-400 mt-2">Campus Infrastructure Management Portal</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Link
             href="/login"
-            className="p-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-medium text-sm shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-3 transition-all"
+            className="p-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-medium text-sm shadow-lg shadow-indigo-600/25 flex flex-col items-center justify-center gap-2 transition-all"
           >
             <LogIn className="h-5 w-5" />
             Sign In
@@ -30,10 +28,18 @@ export default function HomePage() {
 
           <Link
             href="/users"
-            className="p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm border border-slate-700 flex items-center justify-center gap-3 transition-all"
+            className="p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm border border-slate-700 flex flex-col items-center justify-center gap-2 transition-all"
           >
-            <Users className="h-5 w-5 text-cyan-400" />
+            <Users className="h-5 w-5 text-indigo-400" />
             User Management
+          </Link>
+
+          <Link
+            href="/buildings"
+            className="p-4 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm border border-slate-700 flex flex-col items-center justify-center gap-2 transition-all"
+          >
+            <Building2 className="h-5 w-5 text-cyan-400" />
+            Building Hierarchy
           </Link>
         </div>
 
