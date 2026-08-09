@@ -58,7 +58,7 @@ export class AuthService {
 
   async login(dto: LoginDto, ipAddress?: string, userAgent?: string) {
     const user = await this.userService.findByEmail(dto.email);
-    if (!user || !user.isActive) {
+    if (!user || !user.passwordHash || !user.isActive) {
       await this.auditLogService.logEvent({
         action: 'LOGIN_FAILED',
         ipAddress,
@@ -68,7 +68,12 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const isPasswordValid = await argon2.verify(user.passwordHash, dto.password);
+    let isPasswordValid = false;
+    try {
+      isPasswordValid = await argon2.verify(user.passwordHash, dto.password);
+    } catch (_err) {
+      isPasswordValid = false;
+    }
     if (!isPasswordValid) {
       await this.auditLogService.logEvent({
         userId: user.id,
