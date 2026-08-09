@@ -25,8 +25,12 @@ COPY . .
 # Generate Prisma Client
 RUN npm run prisma:generate --workspace=@campus-infra/database
 
-# Build Backend Application
-RUN npm run build --workspace=apps/backend
+# Build Shared Package
+RUN npm run build --workspace=@campus-infra/shared
+
+# Build Backend Application inside its directory
+WORKDIR /app/apps/backend
+RUN npm run build
 
 FROM base AS runner
 WORKDIR /app
@@ -40,6 +44,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
 COPY --from=builder /app/apps/backend/package*.json ./apps/backend/
+COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/database ./database
 
 USER nestjs
