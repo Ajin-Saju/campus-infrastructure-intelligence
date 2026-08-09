@@ -24,7 +24,11 @@ export class LostFoundService implements OnModuleInit {
   constructor(private repository: LostFoundRepository) {}
 
   async onModuleInit() {
-    await this.seedDefaultCategories();
+    try {
+      await this.seedDefaultCategories();
+    } catch (err: any) {
+      console.warn('LostFoundService seed warning:', err?.message || err);
+    }
   }
 
   private async seedDefaultCategories() {
