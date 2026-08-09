@@ -26,8 +26,9 @@ COPY . .
 RUN npm run prisma:generate --workspace=@campus-infra/database
 RUN npm run build --workspace=@campus-infra/shared
 
-# Build Backend Application
-RUN npm run build --workspace=apps/backend
+# Build Backend Application inside apps/backend directory
+WORKDIR /app/apps/backend
+RUN npx nest build
 
 FROM base AS runner
 WORKDIR /app
@@ -37,11 +38,12 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nestjs
 
-# Copy node_modules, packages, database, and backend directory
+# Copy node_modules, packages, database, and backend compiled dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/database ./database
-COPY --from=builder /app/apps/backend ./apps/backend
+COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
+COPY --from=builder /app/apps/backend/package*.json ./apps/backend/
 
 USER nestjs
 
