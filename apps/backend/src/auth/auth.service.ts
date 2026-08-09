@@ -85,17 +85,24 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const tokens = await this.generateTokens(user.id, user.email, user.role.name);
-    await this.userService.setRefreshTokenHash(user.id, tokens.refreshToken);
-    await this.userService.updateLastLogin(user.id);
+    const roleName = user.role?.name || 'STUDENT';
+    const permissions = user.role?.permissions || [];
 
-    await this.auditLogService.logEvent({
-      userId: user.id,
-      action: 'LOGIN_SUCCESS',
-      ipAddress,
-      userAgent,
-      details: { email: user.email, role: user.role.name },
-    });
+    const tokens = await this.generateTokens(user.id, user.email, roleName);
+
+    try {
+      await this.userService.setRefreshTokenHash(user.id, tokens.refreshToken);
+      await this.userService.updateLastLogin(user.id);
+      await this.auditLogService.logEvent({
+        userId: user.id,
+        action: 'LOGIN_SUCCESS',
+        ipAddress,
+        userAgent,
+        details: { email: user.email, role: roleName },
+      });
+    } catch (updateErr) {
+      console.warn('Post-login database update warning:', updateErr);
+    }
 
     return {
       accessToken: tokens.accessToken,
@@ -105,8 +112,8 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: user.role.name,
-        permissions: user.role.permissions,
+        role: roleName,
+        permissions,
         isEmailVerified: user.isEmailVerified,
       },
     };
