@@ -18,13 +18,20 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.4.15",
+    "@nestjs/platform-socket.io": "^10.4.15",
+    "@nestjs/websockets": "^10.4.15",
+    "@types/nodemailer": "^8.0.1",
+    "@types/qrcode": "^1.5.6",
     "argon2": "^0.41.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "nodemailer": "^9.0.5",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@campus-infra/config": "*",

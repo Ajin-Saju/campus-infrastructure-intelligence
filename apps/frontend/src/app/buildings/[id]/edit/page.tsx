@@ -3,6 +3,7 @@
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../../context/auth-context';
 import { fetchBuildingById, updateBuilding } from '../../../../lib/buildings-client';
 import {
   Building2,
@@ -19,6 +20,24 @@ export default function EditBuildingPage({ params }: { params: Promise<{ id: str
   const resolvedParams = use(params);
   const buildingId = resolvedParams.id;
   const router = useRouter();
+  const { user, isLoading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [authLoading, user, router]);
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400">
+        <div className="flex items-center gap-3">
+          <div className="h-5 w-5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+          <span>Verifying session...</span>
+        </div>
+      </div>
+    );
+  }
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

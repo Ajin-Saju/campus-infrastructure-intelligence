@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ConflictException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { AuditLogService } from '../audit-log/audit-log.service';
@@ -81,7 +82,28 @@ export class UserService {
     return user;
   }
 
-  async updateUser(id: string, dto: UpdateUserDto, performingUserId?: string) {
+  async updateUser(
+    id: string,
+    dto: UpdateUserDto,
+    performingUserId?: string,
+    performingUserRole?: string,
+  ) {
+    const isAdmin = performingUserRole === 'ADMIN';
+    const isSelf = performingUserId === id;
+
+    if (!isAdmin && !isSelf) {
+      throw new ForbiddenException('You are not authorized to update another user profile');
+    }
+
+    if (!isAdmin) {
+      if (dto.roleName) {
+        throw new ForbiddenException('Only administrators can update user roles');
+      }
+      if (dto.isActive !== undefined) {
+        throw new ForbiddenException('Only administrators can modify account active status');
+      }
+    }
+
     const user = await this.getUserById(id);
 
     if (dto.email && dto.email.toLowerCase() !== user.email) {
@@ -97,13 +119,13 @@ export class UserService {
     if (dto.lastName) updateData.lastName = dto.lastName;
     if (dto.phone !== undefined) updateData.phone = dto.phone;
     if (dto.avatarUrl !== undefined) updateData.avatarUrl = dto.avatarUrl;
-    if (dto.isActive !== undefined) updateData.isActive = dto.isActive;
+    if (isAdmin && dto.isActive !== undefined) updateData.isActive = dto.isActive;
 
     if (dto.password) {
       updateData.passwordHash = await argon2.hash(dto.password);
     }
 
-    if (dto.roleName) {
+    if (isAdmin && dto.roleName) {
       let role = await this.userRepository.findRoleByName(dto.roleName);
       if (!role) {
         role = await this.userRepository.createRole(dto.roleName);
@@ -155,7 +177,19 @@ export class UserService {
     return updatedUser;
   }
 
-  async updateUserAvatar(id: string, avatarUrl: string, performingUserId?: string) {
+  async updateUserAvatar(
+    id: string,
+    avatarUrl: string,
+    performingUserId?: string,
+    performingUserRole?: string,
+  ) {
+    const isAdmin = performingUserRole === 'ADMIN';
+    const isSelf = performingUserId === id;
+
+    if (!isAdmin && !isSelf) {
+      throw new ForbiddenException('You are not authorized to update another user avatar');
+    }
+
     await this.getUserById(id);
 
     const updatedUser = await this.userRepository.update(id, {

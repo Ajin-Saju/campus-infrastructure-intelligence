@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../context/auth-context';
 import { createUser } from '../../../lib/users-client';
 import {
   User,
@@ -19,6 +20,24 @@ import {
 
 export default function CreateUserPage() {
   const router = useRouter();
+  const { user: currentUser, isLoading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && !currentUser) {
+      router.push('/login');
+    }
+  }, [authLoading, currentUser, router]);
+
+  if (authLoading || !currentUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400">
+        <div className="flex items-center gap-3">
+          <div className="h-5 w-5 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+          <span>Verifying session...</span>
+        </div>
+      </div>
+    );
+  }
 
   const [formData, setFormData] = useState({
     firstName: '',

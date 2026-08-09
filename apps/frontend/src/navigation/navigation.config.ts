@@ -1,0 +1,308 @@
+import { NavItem } from './navigation.types';
+
+// Centralized Navigation Configurations mapped by Actor Role
+
+export const ADMIN_NAV: NavItem[] = [
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: 'LayoutDashboard',
+    route: '/dashboard',
+    allowedRoles: ['ADMIN'],
+  },
+  {
+    id: 'issues',
+    label: 'Issues',
+    icon: 'ShieldCheck',
+    route: '/issues',
+    allowedRoles: ['ADMIN'],
+  },
+  {
+    id: 'lost-found',
+    label: 'Lost & Found',
+    icon: 'Search',
+    route: '/lost-found',
+    allowedRoles: ['ADMIN'],
+    children: [
+      { id: 'lf-browse', label: 'Browse', route: '/lost-found', allowedRoles: ['ADMIN'] },
+      { id: 'lf-lost', label: 'Lost Items', route: '/lost-found/lost', allowedRoles: ['ADMIN'] },
+      { id: 'lf-found', label: 'Found Items', route: '/lost-found/found', allowedRoles: ['ADMIN'] },
+      { id: 'lf-my-reports', label: 'My Reports', route: '/lost-found/my-reports', allowedRoles: ['ADMIN'] },
+      { id: 'lf-admin-manage', label: 'Manage Items', route: '/lost-found/admin/manage', allowedRoles: ['ADMIN'] },
+      { id: 'lf-admin-matches', label: 'Match Requests', route: '/lost-found/admin/matches', allowedRoles: ['ADMIN'] },
+      { id: 'lf-admin-categories', label: 'Categories', route: '/lost-found/admin/categories', allowedRoles: ['ADMIN'] },
+    ],
+  },
+  {
+    id: 'maintenance',
+    label: 'Maintenance',
+    icon: 'Wrench',
+    route: '/maintenance',
+    allowedRoles: ['ADMIN'],
+    children: [
+      { id: 'maint-all', label: 'All Tasks', route: '/maintenance', allowedRoles: ['ADMIN'] },
+      { id: 'maint-assigned', label: 'Assigned Tasks', route: '/maintenance?assigned=true', allowedRoles: ['ADMIN'] },
+      { id: 'maint-history', label: 'Repair History', route: '/maintenance/history', allowedRoles: ['ADMIN'] },
+    ],
+  },
+  {
+    id: 'buildings',
+    label: 'Buildings',
+    icon: 'Building2',
+    route: '/buildings',
+    allowedRoles: ['ADMIN'],
+  },
+  {
+    id: 'assets',
+    label: 'Assets',
+    icon: 'Box',
+    route: '/assets',
+    allowedRoles: ['ADMIN'],
+    children: [
+      { id: 'ast-all', label: 'All Assets', route: '/assets', allowedRoles: ['ADMIN'] },
+      { id: 'ast-categories', label: 'Asset Categories', route: '/assets/categories', allowedRoles: ['ADMIN'] },
+      { id: 'ast-qrcodes', label: 'QR Codes', route: '/qr-code', allowedRoles: ['ADMIN'] },
+    ],
+  },
+  {
+    id: 'vendors',
+    label: 'Vendors',
+    icon: 'Briefcase',
+    route: '/vendors',
+    allowedRoles: ['ADMIN'],
+  },
+  {
+    id: 'users',
+    label: 'Users',
+    icon: 'Users',
+    route: '/users',
+    allowedRoles: ['ADMIN'],
+  },
+  {
+    id: 'notifications',
+    label: 'Notifications',
+    icon: 'Bell',
+    route: '/notifications',
+    allowedRoles: ['ADMIN'],
+  },
+  {
+    id: 'search',
+    label: 'Search',
+    icon: 'Search',
+    route: '/search',
+    allowedRoles: ['ADMIN'],
+  },
+];
+
+export const TECHNICIAN_NAV: NavItem[] = [
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: 'LayoutDashboard',
+    route: '/dashboard',
+    allowedRoles: ['TECHNICIAN'],
+  },
+  {
+    id: 'scan-qr',
+    label: 'Scan QR',
+    icon: 'QrCode',
+    route: '/qr-code',
+    allowedRoles: ['TECHNICIAN'],
+  },
+  {
+    id: 'my-tasks',
+    label: 'My Tasks',
+    icon: 'Wrench',
+    route: '/maintenance',
+    allowedRoles: ['TECHNICIAN'],
+  },
+  {
+    id: 'issues',
+    label: 'Issues',
+    icon: 'ShieldCheck',
+    route: '/issues',
+    allowedRoles: ['TECHNICIAN'],
+  },
+  {
+    id: 'repair-history',
+    label: 'Repair History',
+    icon: 'Clock',
+    route: '/maintenance/history',
+    allowedRoles: ['TECHNICIAN'],
+  },
+  {
+    id: 'notifications',
+    label: 'Notifications',
+    icon: 'Bell',
+    route: '/notifications',
+    allowedRoles: ['TECHNICIAN'],
+  },
+  {
+    id: 'search',
+    label: 'Search',
+    icon: 'Search',
+    route: '/search',
+    allowedRoles: ['TECHNICIAN'],
+  },
+];
+
+export const VENDOR_NAV: NavItem[] = [
+  {
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: 'LayoutDashboard',
+    route: '/dashboard',
+    allowedRoles: ['VENDOR'],
+  },
+  {
+    id: 'scan-qr',
+    label: 'Scan QR',
+    icon: 'QrCode',
+    route: '/qr-code',
+    allowedRoles: ['VENDOR'],
+  },
+  {
+    id: 'my-repairs',
+    label: 'My Repairs',
+    icon: 'Briefcase',
+    route: '/vendors',
+    allowedRoles: ['VENDOR'],
+    children: [
+      { id: 'v-assigned', label: 'Assigned Repairs', route: '/vendors', allowedRoles: ['VENDOR'] },
+      { id: 'v-in-progress', label: 'In Progress', route: '/vendors?status=IN_PROGRESS', allowedRoles: ['VENDOR'] },
+      { id: 'v-completed', label: 'Completed', route: '/vendors?status=COMPLETED', allowedRoles: ['VENDOR'] },
+    ],
+  },
+  {
+    id: 'quotations',
+    label: 'Quotations',
+    icon: 'FileText',
+    route: '/vendors?tab=quotations',
+    allowedRoles: ['VENDOR'],
+  },
+  {
+    id: 'completion-reports',
+    label: 'Completion Reports',
+    icon: 'CheckCircle2',
+    route: '/vendors?tab=completion',
+    allowedRoles: ['VENDOR'],
+  },
+  {
+    id: 'invoices',
+    label: 'Invoices',
+    icon: 'DollarSign',
+    route: '/vendors?tab=invoices',
+    allowedRoles: ['VENDOR'],
+  },
+  {
+    id: 'notifications',
+    label: 'Notifications',
+    icon: 'Bell',
+    route: '/notifications',
+    allowedRoles: ['VENDOR'],
+  },
+];
+
+export const FACULTY_NAV: NavItem[] = [
+  {
+    id: 'home',
+    label: 'Home',
+    icon: 'Home',
+    route: '/',
+    allowedRoles: ['FACULTY'],
+  },
+  {
+    id: 'scan-qr',
+    label: 'Scan QR',
+    icon: 'QrCode',
+    route: '/qr-code',
+    allowedRoles: ['FACULTY'],
+  },
+  {
+    id: 'report-issue',
+    label: 'Report Issue',
+    icon: 'PlusCircle',
+    route: '/issues/report',
+    allowedRoles: ['FACULTY'],
+  },
+  {
+    id: 'my-reports',
+    label: 'My Reports',
+    icon: 'ShieldCheck',
+    route: '/issues',
+    allowedRoles: ['FACULTY'],
+  },
+  {
+    id: 'lost-found',
+    label: 'Lost & Found',
+    icon: 'Search',
+    route: '/lost-found',
+    allowedRoles: ['FACULTY'],
+    children: [
+      { id: 'lf-browse', label: 'Browse', route: '/lost-found', allowedRoles: ['FACULTY'] },
+      { id: 'lf-lost', label: 'Lost Items', route: '/lost-found/lost', allowedRoles: ['FACULTY'] },
+      { id: 'lf-found', label: 'Found Items', route: '/lost-found/found', allowedRoles: ['FACULTY'] },
+      { id: 'lf-my-reports', label: 'My Reports', route: '/lost-found/my-reports', allowedRoles: ['FACULTY'] },
+    ],
+  },
+  {
+    id: 'notifications',
+    label: 'Notifications',
+    icon: 'Bell',
+    route: '/notifications',
+    allowedRoles: ['FACULTY'],
+  },
+];
+
+export const STUDENT_NAV: NavItem[] = [
+  {
+    id: 'home',
+    label: 'Home',
+    icon: 'Home',
+    route: '/',
+    allowedRoles: ['STUDENT'],
+  },
+  {
+    id: 'scan-qr',
+    label: 'Scan QR',
+    icon: 'QrCode',
+    route: '/qr-code',
+    allowedRoles: ['STUDENT'],
+  },
+  {
+    id: 'report-issue',
+    label: 'Report Issue',
+    icon: 'PlusCircle',
+    route: '/issues/report',
+    allowedRoles: ['STUDENT'],
+  },
+  {
+    id: 'my-reports',
+    label: 'My Reports',
+    icon: 'ShieldCheck',
+    route: '/issues',
+    allowedRoles: ['STUDENT'],
+  },
+  {
+    id: 'lost-found',
+    label: 'Lost & Found',
+    icon: 'Search',
+    route: '/lost-found',
+    allowedRoles: ['STUDENT'],
+    children: [
+      { id: 'lf-browse', label: 'Browse', route: '/lost-found', allowedRoles: ['STUDENT'] },
+      { id: 'lf-lost', label: 'Lost Items', route: '/lost-found/lost', allowedRoles: ['STUDENT'] },
+      { id: 'lf-found', label: 'Found Items', route: '/lost-found/found', allowedRoles: ['STUDENT'] },
+      { id: 'lf-report-lost', label: 'Report Lost Item', route: '/lost-found/report/lost', allowedRoles: ['STUDENT'] },
+      { id: 'lf-report-found', label: 'Report Found Item', route: '/lost-found/report/found', allowedRoles: ['STUDENT'] },
+      { id: 'lf-my-reports', label: 'My Reports', route: '/lost-found/my-reports', allowedRoles: ['STUDENT'] },
+    ],
+  },
+  {
+    id: 'notifications',
+    label: 'Notifications',
+    icon: 'Bell',
+    route: '/notifications',
+    allowedRoles: ['STUDENT'],
+  },
+];

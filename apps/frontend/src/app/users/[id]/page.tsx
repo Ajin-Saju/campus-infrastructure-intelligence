@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../context/auth-context';
 import { fetchUserById, UserItem } from '../../../lib/users-client';
 import {
   User,
@@ -18,6 +20,8 @@ import {
 } from 'lucide-react';
 
 export default function UserDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const router = useRouter();
+  const { user: currentUser, isLoading: authLoading } = useAuth();
   const resolvedParams = use(params);
   const userId = resolvedParams.id;
 
@@ -26,18 +30,26 @@ export default function UserDetailsPage({ params }: { params: Promise<{ id: stri
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const u = await fetchUserById(userId);
-        setUser(u);
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch user details.');
-      } finally {
-        setLoading(false);
-      }
+    if (!authLoading && !currentUser) {
+      router.push('/login');
     }
-    loadData();
-  }, [userId]);
+  }, [authLoading, currentUser, router]);
+
+  useEffect(() => {
+    if (!authLoading && currentUser) {
+      const loadData = async () => {
+        try {
+          const u = await fetchUserById(userId);
+          setUser(u);
+        } catch (err: any) {
+          setError(err.message || 'Failed to fetch user details.');
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadData();
+    }
+  }, [userId, authLoading, currentUser]);
 
   if (loading) {
     return (

@@ -18,9 +18,11 @@ import { UpdateFloorDto } from './dto/update-floor.dto';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller()
 export class BuildingController {
   constructor(private readonly buildingService: BuildingService) {}
@@ -36,6 +38,7 @@ export class BuildingController {
     return this.buildingService.getBuildingById(id);
   }
 
+  @Roles('ADMIN')
   @Post('buildings')
   async createBuilding(
     @Body() dto: CreateBuildingDto,
@@ -44,6 +47,7 @@ export class BuildingController {
     return this.buildingService.createBuilding(dto, performingUserId);
   }
 
+  @Roles('ADMIN')
   @Patch('buildings/:id')
   async updateBuilding(
     @Param('id') id: string,
@@ -53,6 +57,7 @@ export class BuildingController {
     return this.buildingService.updateBuilding(id, dto, performingUserId);
   }
 
+  @Roles('ADMIN')
   @Delete('buildings/:id')
   async deleteBuilding(@Param('id') id: string, @CurrentUser('id') performingUserId: string) {
     await this.buildingService.softDeleteBuilding(id, performingUserId);
@@ -60,6 +65,7 @@ export class BuildingController {
   }
 
   // Floors
+  @Roles('ADMIN')
   @Post('buildings/:buildingId/floors')
   async createFloor(
     @Param('buildingId') buildingId: string,
@@ -69,6 +75,7 @@ export class BuildingController {
     return this.buildingService.createFloor(buildingId, dto, performingUserId);
   }
 
+  @Roles('ADMIN')
   @Patch('floors/:id')
   async updateFloor(
     @Param('id') id: string,
@@ -78,6 +85,7 @@ export class BuildingController {
     return this.buildingService.updateFloor(id, dto, performingUserId);
   }
 
+  @Roles('ADMIN')
   @Delete('floors/:id')
   async deleteFloor(@Param('id') id: string, @CurrentUser('id') performingUserId: string) {
     await this.buildingService.deleteFloor(id, performingUserId);
@@ -85,6 +93,7 @@ export class BuildingController {
   }
 
   // Rooms
+  @Roles('ADMIN')
   @Post('buildings/:buildingId/floors/:floorId/rooms')
   async createRoom(
     @Param('buildingId') buildingId: string,
@@ -95,6 +104,7 @@ export class BuildingController {
     return this.buildingService.createRoom(buildingId, floorId, dto, performingUserId);
   }
 
+  @Roles('ADMIN')
   @Patch('rooms/:id')
   async updateRoom(
     @Param('id') id: string,
@@ -104,6 +114,7 @@ export class BuildingController {
     return this.buildingService.updateRoom(id, dto, performingUserId);
   }
 
+  @Roles('ADMIN')
   @Delete('rooms/:id')
   async deleteRoom(@Param('id') id: string, @CurrentUser('id') performingUserId: string) {
     await this.buildingService.deleteRoom(id, performingUserId);

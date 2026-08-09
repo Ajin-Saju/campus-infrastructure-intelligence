@@ -27,16 +27,19 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Roles('ADMIN')
   @Get()
   async findAll(@Query() query: UserQueryDto) {
     return this.userService.findPaginatedUsers(query);
   }
 
+  @Roles('ADMIN')
   @Get('roles')
   async getRoles() {
     return this.userService.getRoles();
   }
 
+  @Roles('ADMIN')
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.userService.getUserById(id);
@@ -52,9 +55,11 @@ export class UserController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateUserDto,
-    @CurrentUser('id') performingUserId: string,
+    @CurrentUser() currentUser: any,
   ) {
-    return this.userService.updateUser(id, dto, performingUserId);
+    const performingUserId = currentUser?.id;
+    const performingUserRole = currentUser?.role?.name || '';
+    return this.userService.updateUser(id, dto, performingUserId, performingUserRole);
   }
 
   @Roles('ADMIN')
@@ -72,9 +77,11 @@ export class UserController {
   async updateAvatar(
     @Param('id') id: string,
     @Body() dto: UpdateAvatarDto,
-    @CurrentUser('id') performingUserId: string,
+    @CurrentUser() currentUser: any,
   ) {
-    return this.userService.updateUserAvatar(id, dto.avatarUrl, performingUserId);
+    const performingUserId = currentUser?.id;
+    const performingUserRole = currentUser?.role?.name || '';
+    return this.userService.updateUserAvatar(id, dto.avatarUrl, performingUserId, performingUserRole);
   }
 
   @Roles('ADMIN')

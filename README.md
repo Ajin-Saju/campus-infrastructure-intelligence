@@ -1,99 +1,143 @@
-# Campus Infrastructure Intelligence
+# Campus Infrastructure Intelligence System
 
-AI-powered campus infrastructure maintenance management system with QR-based issue reporting, analytics, and intelligent maintenance workflow.
+[![CI Pipeline](https://github.com/Ajin-Saju/campus-infrastructure-intelligence/actions/workflows/ci.yml/badge.svg)](https://github.com/Ajin-Saju/campus-infrastructure-intelligence/actions/workflows/ci.yml)
+[![Docker Build](https://github.com/Ajin-Saju/campus-infrastructure-intelligence/actions/workflows/docker.yml/badge.svg)](https://github.com/Ajin-Saju/campus-infrastructure-intelligence/actions/workflows/docker.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
----
-
-## Technical Stack
-
-- **Frontend**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, shadcn/ui
-- **Backend**: NestJS, TypeScript, `@nestjs/config`
-- **Database Layer**: PostgreSQL, Prisma ORM
-- **Monorepo Engine**: Turborepo, npm workspaces
-- **Code Quality**: ESLint, Prettier, Husky, lint-staged
-- **Containerization**: Docker, Docker Compose
-- **CI/CD**: GitHub Actions
+An enterprise-grade, AI-powered campus infrastructure, building hierarchy, asset lifecycle, QR code, maintenance workflow, and issue management monorepo application.
 
 ---
 
-## Installation & Setup Steps
+## 🏗️ Target Architecture & Technology Stack
 
-### 1. Prerequisites
-
-Ensure you have the following installed on your machine:
-
-- **Node.js**: `v18.0.0` or higher (v22 recommended)
-- **NPM**: `v9.0.0` or higher
-- **Docker**: (Optional, for database and container deployment)
-
-### 2. Clone and Install Dependencies
-
-```bash
-git clone https://github.com/Ajin-Saju/campus-infrastructure-intelligence.git
-cd campus-infrastructure-intelligence
-npm install
+```text
+                         GitHub
+                            │
+              ┌─────────────┴─────────────┐
+              │                           │
+          Frontend                    Backend
+          Next.js                     NestJS
+              │                           │
+           Vercel                     Render
+                                          │
+                               ┌──────────┴──────────┐
+                               │                     │
+                            Docker              PostgreSQL
+                               │                     │
+                            Render               Supabase
+                               │
+                         Socket.IO
+                               │
+                    ┌──────────┼──────────┐
+                    │          │          │
+                   AI        Email      Cloudinary
 ```
 
-### 3. Setup Environment Variables
-
-Copy the environment template files for all workspaces:
-
-```bash
-# Root environment file
-cp .env.example .env
-
-# App environment files
-cp apps/frontend/.env.example apps/frontend/.env.local
-cp apps/backend/.env.example apps/backend/.env
-cp database/.env.example database/.env
-```
-
-### 4. Database Setup (Optional Local PostgreSQL)
-
-Start PostgreSQL using Docker Compose:
-
-```bash
-docker compose -f docker/docker-compose.dev.yml up -d
-```
-
-### 5. Running the Monorepo
-
-Start all applications in development mode using Turborepo:
-
-```bash
-npm run dev
-```
-
-- **Frontend**: `http://localhost:3000`
-- **Backend**: `http://localhost:3001`
+* **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS, Lucide React, Recharts.
+* **Backend**: NestJS 10, Express, Socket.IO (WebSockets), Passport JWT, Bcrypt.
+* **Database & ORM**: PostgreSQL, Prisma ORM.
+* **AI Engine**: Google Gemini API & OpenAI API (Server-side issue categorization & predictive analytics).
+* **Storage & Email**: Cloudinary Media CDN, SMTP Email Dispatcher.
+* **DevOps & Containerization**: Docker, Docker Compose, Nginx, GitHub Actions CI/CD.
 
 ---
 
-## Monorepo Folder Structure
+## 🌟 Key Features
 
-```
+1. **Role-Based Access Control (RBAC)**: Custom permissions and navigation for `ADMIN`, `TECHNICIAN`, `STUDENT`, `FACULTY`, and `VENDOR`.
+2. **Building Hierarchy**: Full management of Campus Buildings, Floors, and Rooms.
+3. **Asset Management**: Lifecycle tracking, status updates, image uploads, and maintenance history.
+4. **QR Code Hub**: Instant generation, download, and mobile scanning for asset details and issue submission.
+5. **AI Issue Categorization & Insights**: Live text analysis for issue reporting and predictive monthly analytics for maintenance managers.
+6. **Maintenance Workflows**: End-to-end task assignment, status updates, technician assignment, and vendor management.
+7. **Lost & Found Hub**: Report, match, and claim campus lost and found items.
+8. **Real-time Notifications**: Socket.IO WebSockets push notifications for assignments and status updates.
+
+---
+
+## 📁 Repository Structure
+
+```text
 campus-infrastructure-intelligence/
 ├── apps/
-│   ├── frontend/         # Next.js 15 App Router, React 19, Tailwind CSS, shadcn/ui
-│   └── backend/          # NestJS API application foundation
+│   ├── frontend/         # Next.js 15 client web application
+│   └── backend/          # NestJS REST & WebSocket server
 ├── packages/
-│   ├── ui/               # Shared React component primitives & Tailwind utilities (cn)
-│   ├── shared/           # Shared TypeScript types, constants, and utility helpers
-│   └── config/           # Centralized TSConfig, ESLint, and Prettier configurations
-├── database/             # Prisma ORM schema definition & PostgreSQL migrations workspace
-├── docker/               # Production Dockerfiles and Docker Compose orchestrations
-├── docs/                 # Enterprise architecture & developer setup documentation
-└── .github/
-    └── workflows/        # GitHub Actions CI pipeline workflows
+│   ├── shared/           # Shared TypeScript interfaces & types
+│   └── config/           # Monorepo configuration packages
+├── database/
+│   └── prisma/           # Prisma Schema & Database Migrations
+├── docker/               # Dockerfiles & Compose environments
+├── nginx/                # Reverse proxy Nginx configurations
+├── docs/                 # System documentation & guides
+│   ├── INSTALLATION.md   # Step-by-step local setup guide
+│   ├── DEPLOYMENT.md     # Production deployment instructions
+│   ├── API.md            # Complete API endpoints reference
+│   ├── DATABASE.md       # PostgreSQL schema & Prisma guide
+│   ├── ARCHITECTURE.md   # System architecture & flows
+│   └── ER-DIAGRAM.md     # Database Mermaid ER Diagram
+├── .github/
+│   └── workflows/        # GitHub Actions CI & Docker workflows
+├── .env.example          # Environment variables template
+├── Dockerfile            # Root production backend Dockerfile
+├── docker-compose.yml    # Development Docker environment
+└── docker-compose.prod.yml # Production Docker orchestration
 ```
 
 ---
 
-## Available Commands
+## ⚡ Quick Start (Local Setup)
 
-- `npm run dev`: Start all workspaces concurrently in development mode.
-- `npm run build`: Build all workspaces for production.
-- `npm run lint`: Run ESLint across all workspaces.
-- `npm run check-types`: Execute TypeScript type-checking across all workspaces.
-- `npm run format`: Format all codebase files with Prettier.
-- `npm run format:check`: Verify formatting compliance with Prettier.
+1. **Clone repository**:
+   ```bash
+   git clone https://github.com/Ajin-Saju/campus-infrastructure-intelligence.git
+   cd campus-infrastructure-intelligence
+   ```
+
+2. **Install monorepo dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**:
+   ```bash
+   cp .env.example .env
+   cp apps/backend/.env.example apps/backend/.env
+   cp apps/frontend/.env.example apps/frontend/.env
+   ```
+
+4. **Run PostgreSQL & Prisma Setup**:
+   ```bash
+   # Start local PostgreSQL via Docker Compose
+   docker-compose up -d postgres
+
+   # Generate Prisma Client & run migrations
+   npm run prisma:generate --workspace=@campus-infra/database
+   npm run prisma:migrate --workspace=@campus-infra/database
+   npm run prisma:seed --workspace=@campus-infra/database
+   ```
+
+5. **Start Development Servers**:
+   ```bash
+   npm run dev
+   ```
+   * **Frontend**: `http://localhost:3000`
+   * **Backend**: `http://localhost:3001`
+   * **Health Endpoint**: `http://localhost:3001/api/v1/health`
+
+---
+
+## 📖 Documentation Quick Links
+
+* 🛠️ [Installation Guide](docs/INSTALLATION.md)
+* 🚀 [Production Deployment Guide](docs/DEPLOYMENT.md)
+* 🔌 [API Documentation](docs/API.md)
+* 🗄️ [Database & Prisma Reference](docs/DATABASE.md)
+* 📐 [Architecture & Data Flow](docs/ARCHITECTURE.md)
+* 📊 [Mermaid ER Diagram](docs/ER-DIAGRAM.md)
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
