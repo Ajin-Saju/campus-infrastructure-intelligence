@@ -1,13 +1,10 @@
 # Dockerfile for NestJS Backend
 FROM node:22-alpine AS base
 
-RUN apk add --no-cache openssl
-
 FROM base AS deps
 WORKDIR /app
-COPY package*.json turbo.json ./
+COPY package*.json ./
 COPY apps/backend/package*.json ./apps/backend/
-COPY database/package*.json ./database/
 COPY packages/shared/package*.json ./packages/shared/
 COPY packages/config/package*.json ./packages/config/
 RUN npm ci
@@ -16,22 +13,17 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run prisma:generate --workspace=@campus-infra/database
-RUN npm run build --workspace=@campus-infra/shared
-WORKDIR /app/apps/backend
-RUN npx nest build
+RUN npm run build --workspace=apps/backend
 
 FROM base AS runner
 WORKDIR /app
-ENV NODE_ENV=production
+ENV NODE_ENV production
 
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/packages ./packages
-COPY --from=builder /app/database ./database
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
 COPY --from=builder /app/apps/backend/package*.json ./apps/backend/
 
 EXPOSE 3001
-ENV PORT=3001
+ENV PORT 3001
 
 CMD ["node", "apps/backend/dist/main.js"]

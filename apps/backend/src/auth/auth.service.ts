@@ -58,7 +58,7 @@ export class AuthService {
 
   async login(dto: LoginDto, ipAddress?: string, userAgent?: string) {
     const user = await this.userService.findByEmail(dto.email);
-    if (!user || !user.passwordHash || !user.isActive) {
+    if (!user || !user.isActive) {
       await this.auditLogService.logEvent({
         action: 'LOGIN_FAILED',
         ipAddress,
@@ -68,12 +68,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    let isPasswordValid = false;
-    try {
-      isPasswordValid = await argon2.verify(user.passwordHash, dto.password);
-    } catch (_err) {
-      isPasswordValid = false;
-    }
+    const isPasswordValid = await argon2.verify(user.passwordHash, dto.password);
     if (!isPasswordValid) {
       await this.auditLogService.logEvent({
         userId: user.id,
@@ -85,24 +80,17 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const roleName = user.role?.name || 'STUDENT';
-    const permissions = user.role?.permissions || [];
+    const tokens = await this.generateTokens(user.id, user.email, user.role.name);
+    await this.userService.setRefreshTokenHash(user.id, tokens.refreshToken);
+    await this.userService.updateLastLogin(user.id);
 
-    const tokens = await this.generateTokens(user.id, user.email, roleName);
-
-    try {
-      await this.userService.setRefreshTokenHash(user.id, tokens.refreshToken);
-      await this.userService.updateLastLogin(user.id);
-      await this.auditLogService.logEvent({
-        userId: user.id,
-        action: 'LOGIN_SUCCESS',
-        ipAddress,
-        userAgent,
-        details: { email: user.email, role: roleName },
-      });
-    } catch (updateErr) {
-      console.warn('Post-login database update warning:', updateErr);
-    }
+    await this.auditLogService.logEvent({
+      userId: user.id,
+      action: 'LOGIN_SUCCESS',
+      ipAddress,
+      userAgent,
+      details: { email: user.email, role: user.role.name },
+    });
 
     return {
       accessToken: tokens.accessToken,
@@ -112,8 +100,8 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        role: roleName,
-        permissions,
+        role: user.role.name,
+        permissions: user.role.permissions,
         isEmailVerified: user.isEmailVerified,
       },
     };

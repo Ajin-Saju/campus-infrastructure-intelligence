@@ -21,13 +21,7 @@ export interface AIMessage {
 }
 
 export async function fetchUserConversations(): Promise<AIConversation[]> {
-  try {
-    const res = await apiRequest<AIConversation[]>('/ai-assistant/conversations');
-    return Array.isArray(res) ? res : [];
-  } catch (err) {
-    console.warn('fetchUserConversations warning:', err);
-    return [];
-  }
+  return apiRequest<AIConversation[]>('/ai-assistant/conversations');
 }
 
 export async function fetchConversationById(id: string): Promise<AIConversation> {

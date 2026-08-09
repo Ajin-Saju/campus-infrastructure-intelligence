@@ -13,11 +13,10 @@ jobs:
 
     env:
       NODE_ENV: test
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/campus_infra_db"
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/campus_ai"
       NEXT_PUBLIC_API_URL: "http://localhost:3001/api/v1"
-      NEXT_PUBLIC_WS_URL: "http://localhost:3001"
-      JWT_ACCESS_SECRET: "ci-test-jwt-access-secret-key-123"
-      JWT_REFRESH_SECRET: "ci-test-jwt-refresh-secret-key-123"
+      JWT_ACCESS_SECRET: "ci-test-jwt-access-secret-key"
+      JWT_REFRESH_SECRET: "ci-test-jwt-refresh-secret-key"
 
     steps:
       - name: Checkout Repository
@@ -45,7 +44,7 @@ jobs:
         run: npm run check-types
 
       - name: Validate Prisma Schema
-        run: npx prisma validate --schema=database/prisma/schema.prisma
+        run: npx prisma validate
 
       - name: Build All Workspaces
         run: npm run build
