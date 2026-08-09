@@ -1,4 +1,4 @@
-# Production Dockerfile for NestJS Backend Deployment (Render / Docker container)
+# Production Dockerfile for NestJS Backend Deployment (Render)
 FROM node:22-alpine AS base
 
 # Install OpenSSL for Prisma Engine compatibility
@@ -22,15 +22,12 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Generate Prisma Client
+# Generate Prisma Client & Build Shared Package
 RUN npm run prisma:generate --workspace=@campus-infra/database
-
-# Build Shared Package
 RUN npm run build --workspace=@campus-infra/shared
 
-# Build Backend Application inside its directory
-WORKDIR /app/apps/backend
-RUN npm run build
+# Build Backend Application
+RUN npm run build --workspace=apps/backend
 
 FROM base AS runner
 WORKDIR /app
@@ -40,12 +37,11 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nestjs
 
-# Copy built application and node_modules
+# Copy node_modules, packages, database, and backend directory
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
-COPY --from=builder /app/apps/backend/package*.json ./apps/backend/
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/database ./database
+COPY --from=builder /app/apps/backend ./apps/backend
 
 USER nestjs
 

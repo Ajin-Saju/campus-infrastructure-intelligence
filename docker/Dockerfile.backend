@@ -18,18 +18,16 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run prisma:generate --workspace=@campus-infra/database
 RUN npm run build --workspace=@campus-infra/shared
-WORKDIR /app/apps/backend
-RUN npm run build
+RUN npm run build --workspace=apps/backend
 
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
-COPY --from=builder /app/apps/backend/package*.json ./apps/backend/
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/database ./database
+COPY --from=builder /app/apps/backend ./apps/backend
 
 EXPOSE 3001
 ENV PORT=3001
