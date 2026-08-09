@@ -65,7 +65,14 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
   });
 
   const text = await res.text();
-  const data = text ? JSON.parse(text) : {};
+  let data: any = {};
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch (_e) {
+    data = {
+      message: `Cannot connect to API (${res.status}). Please check NEXT_PUBLIC_API_URL in Vercel Dashboard.`,
+    };
+  }
 
   if (!res.ok) {
     if (res.status === 401) {
